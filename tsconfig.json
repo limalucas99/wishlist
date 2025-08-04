@@ -5,6 +5,20 @@
     "target": "es2019",
     "esModuleInterop": true,
     "allowJs": true,
-    "strictNullChecks": true
-  }
+    "strictNullChecks": true,
+    "baseUrl": "src",
+    "paths": {
+      "@/tests/*": [
+        "../tests/*"
+      ],
+      "@/*": [
+        "*"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "tests"
+  ],
+  "exclude": []
 }

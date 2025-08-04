@@ -5,9 +5,13 @@ const config: Config = {
   collectCoverageFrom: ["<rootDir>/src/**/*.ts"],
   coverageDirectory: "coverage",
   coverageProvider: "v8",
-  roots: ["<rootDir>/src"],
+  roots: ["<rootDir>/tests"],
   transform: {
     ".+\\.ts$": "ts-jest",
+  },
+  moduleNameMapper: {
+    "@/tests/(.*)": "<rootDir>/tests/$1",
+    "@/(.*)": "<rootDir>/src/$1",
   },
 };
 
