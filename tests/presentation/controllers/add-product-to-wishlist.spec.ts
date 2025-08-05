@@ -62,4 +62,16 @@ describe("AddProductToWishlistController", () => {
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
   });
+
+  test("Should return 201 if product is added successfully", async () => {
+    const { sut } = makeSut();
+    const request: AddProductToWishlistDto = {
+      id: "any_product_id",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.CREATED);
+    expect(httpResponse.body).toEqual({
+      message: "Product added to wishlist successfully",
+    });
+  });
 });
