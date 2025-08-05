@@ -1,18 +1,19 @@
 import type { Controller, HttpResponse } from "@/presentation/protocols";
 import type { AddProductToWishlistDto } from "../dtos/add-product-to-wishlist.dto";
 import { MissingParamError } from "../errors";
-import { badRequest, ok, serverError } from "../helpers/http-helper";
+import { badRequest, created, serverError } from "../helpers/http-helper";
+import type { AddProductToWishlist } from "@/domain/usecases/add-product-to-wishlist";
 
 export class AddProductToWishlistController implements Controller {
+  constructor(private readonly addProductToWishList: AddProductToWishlist) {}
   async handle(request: AddProductToWishlistDto): Promise<HttpResponse> {
     try {
-      if (!request.productId) {
-        return badRequest(new MissingParamError("productId"));
+      if (!request.id) {
+        return badRequest(new MissingParamError("id"));
       }
-      const product = await new Promise((resolve, reject) => {
-        resolve({ message: "Product added to wishlist successfully" });
-      });
-      return ok(product);
+      const { id } = request;
+      await this.addProductToWishList.add({ id });
+      return created({ message: "Product added to wishlist successfully" });
     } catch (error) {
       return serverError();
     }
