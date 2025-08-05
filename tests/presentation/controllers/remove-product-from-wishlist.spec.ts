@@ -42,4 +42,14 @@ describe("RemoveProductFromWishlistController", () => {
     expect(httpResponse.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
     expect(httpResponse.body).toEqual(new MissingParamError("id"));
   });
+
+  test("Should call removeProductFromWishlist with correct values", async () => {
+    const { sut, removeProductFromWishlistStub } = makeSut();
+    const removeSpy = jest.spyOn(removeProductFromWishlistStub, "remove");
+    const request: RemoveProductFromWishlistDto = {
+      id: "any_product_id",
+    };
+    await sut.handle(request);
+    expect(removeSpy).toHaveBeenCalledWith({ id: "any_product_id" });
+  });
 });
