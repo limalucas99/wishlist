@@ -52,4 +52,18 @@ describe("RemoveProductFromWishlistController", () => {
     await sut.handle(request);
     expect(removeSpy).toHaveBeenCalledWith({ id: "any_product_id" });
   });
+
+  test("Should return SERVER ERROR if removeProductFromWishlist throws", async () => {
+    const { sut, removeProductFromWishlistStub } = makeSut();
+    jest
+      .spyOn(removeProductFromWishlistStub, "remove")
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
+    const request: RemoveProductFromWishlistDto = {
+      id: "any_product_id",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
+  });
 });
