@@ -12,7 +12,7 @@ interface SutTypes {
 
 const makeCheckProduct = (): CheckProductInWishlist => {
   class CheckProductInWishlistStub implements CheckProductInWishlist {
-    async check(productId: ProductModel): Promise<boolean> {
+    async check(product: ProductModel, clientId: string): Promise<boolean> {
       return await new Promise((resolve) => {
         resolve(true);
       });
@@ -31,30 +31,47 @@ const makeSut = (): SutTypes => {
 };
 
 describe("CheckProductInWishlistController", () => {
-  test("Should return BAD REQUEST if no productId is provided", async () => {
+  test("Should return BAD REQUEST if no clientId is provided", async () => {
     const { sut } = makeSut();
     const request: CheckProductInWishlistDto = {
-      id: "",
+      clientId: "",
+      productId: "any_product_id",
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
-    expect(httpResponse.body).toEqual(new MissingParamError("id"));
+    expect(httpResponse.body).toEqual(new MissingParamError("clientId"));
+  });
+
+  test("Should return BAD REQUEST if no productId is provided", async () => {
+    const { sut } = makeSut();
+    const request: CheckProductInWishlistDto = {
+      clientId: "any_client_id",
+      productId: "",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
+    expect(httpResponse.body).toEqual(new MissingParamError("productId"));
   });
 
   test("Should call checkProductInWishlist with correct values", async () => {
     const { sut, checkProductInWishlistStub } = makeSut();
     const checkSpy = jest.spyOn(checkProductInWishlistStub, "check");
     const request: CheckProductInWishlistDto = {
-      id: "any_product_id",
+      clientId: "any_client_id",
+      productId: "any_product_id",
     };
     await sut.handle(request);
-    expect(checkSpy).toHaveBeenCalledWith({ id: "any_product_id" });
+    expect(checkSpy).toHaveBeenCalledWith(
+      { id: "any_product_id" },
+      "any_client_id"
+    );
   });
 
   test("Should return ok with isInWishlist true if product is found", async () => {
     const { sut } = makeSut();
     const request: CheckProductInWishlistDto = {
-      id: "any_product_id",
+      clientId: "any_client_id",
+      productId: "any_product_id",
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.OK);
@@ -69,7 +86,8 @@ describe("CheckProductInWishlistController", () => {
       })
     );
     const request: CheckProductInWishlistDto = {
-      id: "any_product_id",
+      clientId: "any_client_id",
+      productId: "any_product_id",
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.OK);
@@ -84,7 +102,8 @@ describe("CheckProductInWishlistController", () => {
         throw new Error();
       });
     const request: CheckProductInWishlistDto = {
-      id: "any_product_id",
+      clientId: "any_client_id",
+      productId: "any_product_id",
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);

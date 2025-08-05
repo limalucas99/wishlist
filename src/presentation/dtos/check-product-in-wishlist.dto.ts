@@ -1,3 +1,4 @@
 export interface CheckProductInWishlistDto {
-  id: string;
+  clientId: string;
+  productId: string;
 }

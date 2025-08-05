@@ -3,6 +3,7 @@ import type { CheckProductInWishlistDto } from "../dtos/check-product-in-wishlis
 import { MissingParamError } from "../errors";
 import { badRequest, ok, serverError } from "../helpers/http-helper";
 import type { CheckProductInWishlist } from "@/domain/usecases/check-product-in-wishlist";
+import type { ProductModel } from "@/domain/models/product";
 
 export class CheckProductInWishlistController implements Controller {
   constructor(
@@ -10,11 +11,21 @@ export class CheckProductInWishlistController implements Controller {
   ) {}
   async handle(request: CheckProductInWishlistDto): Promise<HttpResponse> {
     try {
-      if (!request.id) {
-        return badRequest(new MissingParamError("id"));
+      if (!request.clientId) {
+        return badRequest(new MissingParamError("clientId"));
       }
-      const { id } = request;
-      const isInWishlist = await this.checkProductInWishlist.check({ id });
+      if (!request.productId) {
+        return badRequest(new MissingParamError("productId"));
+      }
+
+      const { clientId, productId } = request;
+
+      const product: ProductModel = { id: productId };
+
+      const isInWishlist = await this.checkProductInWishlist.check(
+        product,
+        clientId
+      );
       return ok({ isInWishlist });
     } catch (error) {
       return serverError();
