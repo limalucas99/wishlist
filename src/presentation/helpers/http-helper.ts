@@ -17,6 +17,11 @@ export const ok = (data: unknown): HttpResponse => ({
   body: data,
 });
 
+export const created = (data: unknown): HttpResponse => ({
+  statusCode: HttpStatusCode.CREATED,
+  body: data,
+});
+
 export const notFound = (error: Error): HttpResponse => ({
   statusCode: HttpStatusCode.NOT_FOUND,
   body: error,
