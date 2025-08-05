@@ -56,4 +56,16 @@ describe("ListWishlistProductsController", () => {
     await sut.handle(request);
     expect(listSpy).toHaveBeenCalledWith("any_client_id");
   });
+
+  test("Should return SERVER ERROR if listWishlistProducts throws", async () => {
+    const { sut, listWishlistProductsStub } = makeSut();
+    jest.spyOn(listWishlistProductsStub, "list").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const request: ListWishlistProductsDto = {
+      clientId: "any_client_id",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
+  });
 });
