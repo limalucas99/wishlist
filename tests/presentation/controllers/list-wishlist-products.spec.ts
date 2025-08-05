@@ -46,4 +46,14 @@ describe("ListWishlistProductsController", () => {
     expect(httpResponse.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
     expect(httpResponse.body).toEqual(new MissingParamError("clientId"));
   });
+
+  test("Should call listWishlistProducts with correct values", async () => {
+    const { sut, listWishlistProductsStub } = makeSut();
+    const listSpy = jest.spyOn(listWishlistProductsStub, "list");
+    const request: ListWishlistProductsDto = {
+      clientId: "any_client_id",
+    };
+    await sut.handle(request);
+    expect(listSpy).toHaveBeenCalledWith("any_client_id");
+  });
 });
