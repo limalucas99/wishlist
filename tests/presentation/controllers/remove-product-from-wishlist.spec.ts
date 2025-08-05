@@ -66,4 +66,16 @@ describe("RemoveProductFromWishlistController", () => {
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
   });
+
+  test("Should return NO CONTENT if product is removed successfully", async () => {
+    const { sut } = makeSut();
+    const request: RemoveProductFromWishlistDto = {
+      id: "any_product_id",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.NO_CONTENT);
+    expect(httpResponse.body).toEqual({
+      message: "Product removed from wishlist successfully",
+    });
+  });
 });
