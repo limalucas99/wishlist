@@ -40,4 +40,14 @@ describe("CheckProductInWishlistController", () => {
     expect(httpResponse.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
     expect(httpResponse.body).toEqual(new MissingParamError("id"));
   });
+
+  test("Should call checkProductInWishlist with correct values", async () => {
+    const { sut, checkProductInWishlistStub } = makeSut();
+    const checkSpy = jest.spyOn(checkProductInWishlistStub, "check");
+    const request: CheckProductInWishlistDto = {
+      id: "any_product_id",
+    };
+    await sut.handle(request);
+    expect(checkSpy).toHaveBeenCalledWith({ id: "any_product_id" });
+  });
 });
