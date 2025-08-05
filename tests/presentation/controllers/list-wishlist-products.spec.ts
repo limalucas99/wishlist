@@ -68,4 +68,19 @@ describe("ListWishlistProductsController", () => {
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
   });
+
+  test("Should return ok with empty products if wishlist does not exist", async () => {
+    const { sut, listWishlistProductsStub } = makeSut();
+    jest.spyOn(listWishlistProductsStub, "list").mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolve(null);
+      })
+    );
+    const request: ListWishlistProductsDto = {
+      clientId: "any_client_id",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.OK);
+    expect(httpResponse.body).toEqual({ products: [] });
+  });
 });
