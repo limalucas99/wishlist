@@ -50,4 +50,16 @@ describe("AddProductToWishlistController", () => {
     await sut.handle(request);
     expect(addSpy).toHaveBeenCalledWith({ id: "any_product_id" });
   });
+
+  test("Should return SERVER ERROR if addProductToWishlist throws", async () => {
+    const { sut, addProductToWishlistStub } = makeSut();
+    jest.spyOn(addProductToWishlistStub, "add").mockImplementationOnce(() => {
+      throw new Error();
+    });
+    const request: AddProductToWishlistDto = {
+      id: "any_product_id",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
+  });
 });
