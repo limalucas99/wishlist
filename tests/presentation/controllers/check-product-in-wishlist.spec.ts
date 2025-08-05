@@ -60,4 +60,19 @@ describe("CheckProductInWishlistController", () => {
     expect(httpResponse.statusCode).toBe(HttpStatusCode.OK);
     expect(httpResponse.body).toEqual({ isInWishlist: true });
   });
+
+  test("Should return ok with isInWishlist false if product is not found", async () => {
+    const { sut, checkProductInWishlistStub } = makeSut();
+    jest.spyOn(checkProductInWishlistStub, "check").mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolve(false);
+      })
+    );
+    const request: CheckProductInWishlistDto = {
+      id: "any_product_id",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.OK);
+    expect(httpResponse.body).toEqual({ isInWishlist: false });
+  });
 });
