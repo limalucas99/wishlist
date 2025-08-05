@@ -1,3 +1,4 @@
 export interface AddProductToWishlistDto {
-  id: string;
+  clientId: string;
+  productId: string;
 }

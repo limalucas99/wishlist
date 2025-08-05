@@ -12,7 +12,7 @@ interface SutTypes {
 
 const makeAddProduct = (): AddProductToWishlist => {
   class AddProductToWishlistStub implements AddProductToWishlist {
-    async add(productId: ProductModel): Promise<void> {
+    async add(product: ProductModel, clientId: string): Promise<void> {
       await new Promise((resolve) => {
         resolve(null);
       });
@@ -31,33 +31,50 @@ const makeSut = (): SutTypes => {
 };
 
 describe("AddProductToWishlistController", () => {
-  test("Should return BAD REQUEST if no productId is provided", async () => {
+  test("Should return BAD REQUEST if no clientId is provided", async () => {
     const { sut } = makeSut();
     const request: AddProductToWishlistDto = {
-      id: "",
+      clientId: "",
+      productId: "any_product_id",
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
-    expect(httpResponse.body).toEqual(new MissingParamError("id"));
+    expect(httpResponse.body).toEqual(new MissingParamError("clientId"));
   });
 
-  test("Should call addProductToWishlist with correct values", async () => {
+  test("Should return BAD REQUEST if no productId is provided", async () => {
+    const { sut } = makeSut();
+    const request: AddProductToWishlistDto = {
+      clientId: "any_client_id",
+      productId: "",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
+    expect(httpResponse.body).toEqual(new MissingParamError("productId"));
+  });
+
+  test("Should call AddProductToWishlist with correct values", async () => {
     const { sut, addProductToWishlistStub } = makeSut();
     const addSpy = jest.spyOn(addProductToWishlistStub, "add");
     const request: AddProductToWishlistDto = {
-      id: "any_product_id",
+      clientId: "any_client_id",
+      productId: "any_product_id",
     };
     await sut.handle(request);
-    expect(addSpy).toHaveBeenCalledWith({ id: "any_product_id" });
+    expect(addSpy).toHaveBeenCalledWith(
+      { id: "any_product_id" },
+      "any_client_id"
+    );
   });
 
-  test("Should return SERVER ERROR if addProductToWishlist throws", async () => {
+  test("Should return SERVER ERROR if AddProductToWishlist throws", async () => {
     const { sut, addProductToWishlistStub } = makeSut();
     jest.spyOn(addProductToWishlistStub, "add").mockImplementationOnce(() => {
       throw new Error();
     });
     const request: AddProductToWishlistDto = {
-      id: "any_product_id",
+      clientId: "any_client_id",
+      productId: "any_product_id",
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
@@ -66,12 +83,16 @@ describe("AddProductToWishlistController", () => {
   test("Should return CREATED if product is added successfully", async () => {
     const { sut } = makeSut();
     const request: AddProductToWishlistDto = {
-      id: "any_product_id",
+      clientId: "any_client_id",
+      productId: "any_product_id",
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.CREATED);
     expect(httpResponse.body).toEqual({
       message: "Product added to wishlist successfully",
+      product: {
+        id: "any_product_id",
+      },
     });
   });
 });
