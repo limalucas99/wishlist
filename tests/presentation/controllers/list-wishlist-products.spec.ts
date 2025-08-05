@@ -10,6 +10,8 @@ interface SutTypes {
   listWishlistProductsStub: ListWishlistProducts;
 }
 
+const EMPTY_PRODUCT_COUNT = 0;
+
 const makeFakeWishlist = (): WishlistModel => ({
   id: "any_wishlist_id",
   clientId: "any_client_id",
@@ -81,6 +83,23 @@ describe("ListWishlistProductsController", () => {
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.OK);
-    expect(httpResponse.body).toEqual({ products: [] });
+    expect(httpResponse.body).toEqual({
+      products: [],
+      totalProducts: EMPTY_PRODUCT_COUNT,
+    });
+  });
+
+  test("Should return ok with wishlist data if wishlist exists", async () => {
+    const { sut } = makeSut();
+    const request: ListWishlistProductsDto = {
+      clientId: "any_client_id",
+    };
+    const httpResponse = await sut.handle(request);
+    const expectedProductsCount = 3;
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.OK);
+    expect(httpResponse.body).toEqual({
+      products: ["product1", "product2", "product3"],
+      totalProducts: expectedProductsCount,
+    });
   });
 });
