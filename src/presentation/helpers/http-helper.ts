@@ -26,3 +26,8 @@ export const notFound = (error: Error): HttpResponse => ({
   statusCode: HttpStatusCode.NOT_FOUND,
   body: error,
 });
+
+export const deleted = (data: unknown): HttpResponse => ({
+  statusCode: HttpStatusCode.NO_CONTENT,
+  body: data,
+});
