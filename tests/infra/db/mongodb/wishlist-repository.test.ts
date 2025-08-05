@@ -53,4 +53,22 @@ describe("WishlistRepository", () => {
       expect(result?.products).toContain(product.id);
     });
   });
+
+  describe("RemoveProductFromWishlist", () => {
+    test("Should remove a product from the wishlist on success", async () => {
+      const sut = new WishlistRepository();
+      const product: ProductModel = {
+        id: "any_product_id",
+      };
+      const clientId = "any_client_id";
+
+      await sut.add(product, clientId);
+      await sut.remove(product, clientId);
+
+      const wishlistCollection = MongoHelper.getCollection("wishlists");
+      const result = await wishlistCollection.findOne({ clientId });
+
+      expect(result?.products).not.toContain(product.id);
+    });
+  });
 });
