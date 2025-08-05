@@ -12,7 +12,7 @@ interface SutTypes {
 
 const makeRemoveProduct = (): RemoveProductFromWishlist => {
   class RemoveProductFromWishlistStub implements RemoveProductFromWishlist {
-    async remove(productId: ProductModel): Promise<void> {
+    async remove(product: ProductModel, clientId: string): Promise<void> {
       await new Promise((resolve) => {
         resolve(null);
       });
@@ -33,24 +33,40 @@ const makeSut = (): SutTypes => {
 };
 
 describe("RemoveProductFromWishlistController", () => {
-  test("Should return BAD REQUEST if no productId is provided", async () => {
+  test("Should return BAD REQUEST if no clientId is provided", async () => {
     const { sut } = makeSut();
     const request: RemoveProductFromWishlistDto = {
-      id: "",
+      clientId: "",
+      productId: "any_product_id",
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
-    expect(httpResponse.body).toEqual(new MissingParamError("id"));
+    expect(httpResponse.body).toEqual(new MissingParamError("clientId"));
+  });
+
+  test("Should return BAD REQUEST if no productId is provided", async () => {
+    const { sut } = makeSut();
+    const request: RemoveProductFromWishlistDto = {
+      clientId: "any_client_id",
+      productId: "",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
+    expect(httpResponse.body).toEqual(new MissingParamError("productId"));
   });
 
   test("Should call removeProductFromWishlist with correct values", async () => {
     const { sut, removeProductFromWishlistStub } = makeSut();
     const removeSpy = jest.spyOn(removeProductFromWishlistStub, "remove");
     const request: RemoveProductFromWishlistDto = {
-      id: "any_product_id",
+      clientId: "any_client_id",
+      productId: "any_product_id",
     };
     await sut.handle(request);
-    expect(removeSpy).toHaveBeenCalledWith({ id: "any_product_id" });
+    expect(removeSpy).toHaveBeenCalledWith(
+      { id: "any_product_id" },
+      "any_client_id"
+    );
   });
 
   test("Should return SERVER ERROR if removeProductFromWishlist throws", async () => {
@@ -61,7 +77,8 @@ describe("RemoveProductFromWishlistController", () => {
         throw new Error();
       });
     const request: RemoveProductFromWishlistDto = {
-      id: "any_product_id",
+      clientId: "any_client_id",
+      productId: "any_product_id",
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.INTERNAL_SERVER_ERROR);
@@ -70,7 +87,8 @@ describe("RemoveProductFromWishlistController", () => {
   test("Should return NO CONTENT if product is removed successfully", async () => {
     const { sut } = makeSut();
     const request: RemoveProductFromWishlistDto = {
-      id: "any_product_id",
+      clientId: "any_client_id",
+      productId: "any_product_id",
     };
     const httpResponse = await sut.handle(request);
     expect(httpResponse.statusCode).toBe(HttpStatusCode.NO_CONTENT);

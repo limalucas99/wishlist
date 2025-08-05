@@ -1,3 +1,4 @@
 export interface RemoveProductFromWishlistDto {
-  id: string;
+  clientId: string;
+  productId: string;
 }
