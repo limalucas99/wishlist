@@ -50,4 +50,14 @@ describe("CheckProductInWishlistController", () => {
     await sut.handle(request);
     expect(checkSpy).toHaveBeenCalledWith({ id: "any_product_id" });
   });
+
+  test("Should return ok with isInWishlist true if product is found", async () => {
+    const { sut } = makeSut();
+    const request: CheckProductInWishlistDto = {
+      id: "any_product_id",
+    };
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.OK);
+    expect(httpResponse.body).toEqual({ isInWishlist: true });
+  });
 });
