@@ -4,13 +4,12 @@ import type { ListWishlistProductsDto } from "@/presentation/dtos/list-wishlist-
 import { HttpStatusCode } from "@/presentation/enums/http";
 import type { ListWishlistProducts } from "@/domain/usecases/list-wishlist-products";
 import type { WishlistModel } from "@/domain/models/wishlist";
+import { EMPTY_PRODUCT_COUNT } from "@/domain/constants";
 
 interface SutTypes {
   sut: ListWishlistProductsController;
   listWishlistProductsStub: ListWishlistProducts;
 }
-
-const EMPTY_PRODUCT_COUNT = 0;
 
 const makeFakeWishlist = (): WishlistModel => ({
   id: "any_wishlist_id",
