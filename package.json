@@ -13,10 +13,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.2.0",
     "eslint-config-love": "^121.0.0",
-    "git-commit-msg-linter": "^5.0.8",
     "husky": "^9.1.7",
     "jest": "^30.0.5",
     "lint-staged": "^16.1.4",

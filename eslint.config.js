@@ -15,7 +15,7 @@ module.exports = (async function config() {
         '@typescript-eslint/no-unsafe-member-access': 'off',
       },
       files: ['**/*.js', '**/*.ts'],
-      ignores: ["dist/**", "node_modules/**", "coverage/**", "eslint.config.js", "jest.config.ts"],
+      ignores: ["dist/**", "node_modules/**", "coverage/**", "commitlint.config.js"],
     },
   ]
 })()
