@@ -1,17 +1,22 @@
 import type { ProductModel } from "@/domain/models/product";
-import type { AddProductToWishlist } from "@/domain/usecases/add-product-to-wishlist";
+import type {
+  AddProductToWishlist,
+  CheckWishlistLimit,
+} from "@/domain/usecases/add-product-to-wishlist";
 import { MongoHelper } from "./mongo-helper";
 import type { RemoveProductFromWishlist } from "@/domain/usecases/remove-product-from-wishlist";
 import type { CheckProductInWishlist } from "@/domain/usecases/check-product-in-wishlist";
 import type { WishlistModel } from "@/domain/models/wishlist";
 import type { ListWishlistProducts } from "@/domain/usecases/list-wishlist-products";
+import { EMPTY_PRODUCT_COUNT } from "@/domain/constants";
 
 export class WishlistRepository
   implements
     AddProductToWishlist,
     RemoveProductFromWishlist,
     CheckProductInWishlist,
-    ListWishlistProducts
+    ListWishlistProducts,
+    CheckWishlistLimit
 {
   async add(product: ProductModel, clientId: string): Promise<void> {
     const wishlistCollection = MongoHelper.getCollection("wishlists");
@@ -54,5 +59,14 @@ export class WishlistRepository
       clientId,
       products: wishlistDocument.products ?? [],
     };
+  }
+
+  async checkLimit(clientId: string): Promise<number> {
+    const wishlistCollection = MongoHelper.getCollection("wishlists");
+    const wishlistDocument = await wishlistCollection.findOne({ clientId });
+
+    if (!wishlistDocument) return EMPTY_PRODUCT_COUNT;
+
+    return (wishlistDocument.products?.length as number) || EMPTY_PRODUCT_COUNT;
   }
 }
