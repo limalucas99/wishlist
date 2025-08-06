@@ -2,12 +2,17 @@ import { AddProductToWishlistController } from "@/presentation/controllers/add-p
 import { MissingParamError } from "@/presentation/errors";
 import type { AddProductToWishlistDto } from "@/presentation/dtos/add-product-to-wishlist.dto";
 import { HttpStatusCode } from "@/presentation/enums/http";
-import type { AddProductToWishlist } from "@/domain/usecases/add-product-to-wishlist";
+import type {
+  AddProductToWishlist,
+  CheckWishlistLimit,
+} from "@/domain/usecases/add-product-to-wishlist";
 import type { ProductModel } from "@/domain/models/product";
+import { EMPTY_PRODUCT_COUNT, MAX_WISHLIST_PRODUCTS } from "@/domain/constants";
 
 interface SutTypes {
   sut: AddProductToWishlistController;
   addProductToWishlistStub: AddProductToWishlist;
+  checkWishlistLimitStub: CheckWishlistLimit;
 }
 
 const makeAddProduct = (): AddProductToWishlist => {
@@ -21,12 +26,28 @@ const makeAddProduct = (): AddProductToWishlist => {
   return new AddProductToWishlistStub();
 };
 
+const makeCheckWishlistLimit = (): CheckWishlistLimit => {
+  class CheckWishlistLimitStub implements CheckWishlistLimit {
+    async checkLimit(clientId: string): Promise<number> {
+      return await new Promise((resolve) => {
+        resolve(EMPTY_PRODUCT_COUNT);
+      });
+    }
+  }
+  return new CheckWishlistLimitStub();
+};
+
 const makeSut = (): SutTypes => {
   const addProductToWishlistStub = makeAddProduct();
-  const sut = new AddProductToWishlistController(addProductToWishlistStub);
+  const checkWishlistLimitStub = makeCheckWishlistLimit();
+  const sut = new AddProductToWishlistController(
+    addProductToWishlistStub,
+    checkWishlistLimitStub
+  );
   return {
     sut,
     addProductToWishlistStub,
+    checkWishlistLimitStub,
   };
 };
 
@@ -94,5 +115,25 @@ describe("AddProductToWishlistController", () => {
         id: "any_product_id",
       },
     });
+  });
+
+  test("Should return BAD REQUEST if wishlist has reached the maximum limit", async () => {
+    const { sut, checkWishlistLimitStub } = makeSut();
+    jest
+      .spyOn(checkWishlistLimitStub, "checkLimit")
+      .mockReturnValueOnce(Promise.resolve(MAX_WISHLIST_PRODUCTS));
+
+    const httpResponse = await sut.handle({
+      clientId: "any_client_id",
+      productId: "any_product_id",
+    });
+
+    expect(httpResponse.statusCode).toBe(HttpStatusCode.BAD_REQUEST);
+    expect(httpResponse.body).toEqual(
+      expect.objectContaining({
+        message: "Wishlist has reached the maximum limit of 20 products",
+        name: "WishlistLimitExceededError",
+      })
+    );
   });
 });
