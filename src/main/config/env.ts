@@ -1,6 +1,11 @@
-const DEFAULT_PORT = 3000;
+import {
+  DEFAULT_SERVER_PORT,
+  DEFAULT_MONGO_URL,
+  DEFAULT_MONGO_TEST_URL,
+} from "./constants";
 
 export default {
-  mongoUrl: process.env.MONGO_URL ?? "mongodb://localhost:27017/wishlist",
-  port: Number(process.env.PORT) || DEFAULT_PORT,
+  mongoUrl: process.env.MONGO_URL ?? DEFAULT_MONGO_URL,
+  mongoTestUrl: process.env.MONGO_TEST_URL ?? DEFAULT_MONGO_TEST_URL,
+  port: Number(process.env.PORT) || DEFAULT_SERVER_PORT,
 };
