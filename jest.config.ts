@@ -7,6 +7,7 @@ const config: Config = {
   preset: "@shelf/jest-mongodb",
   coverageProvider: "v8",
   roots: ["<rootDir>/tests"],
+  testMatch: ["**/*.spec.ts", "**/*.test.ts", "**/*.e2e.ts"],
   transform: {
     ".+\\.ts$": "ts-jest",
   },

@@ -8,7 +8,9 @@
     "start": "node dist/main/server.js",
     "dev": "nodemon",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
-    "test:dev": "npm test -- --watch",
+    "test:unit": "npm test -- --watch -c jest-unit-config.ts",
+    "test:integration": "npm test -- --watch -c jest-integration-config.ts",
+    "test:e2e": "npm test -- --watch -c jest-e2e-config.ts",
     "test:staged": "npm test -- --findRelatedTests",
     "prepare": "husky"
   },
