@@ -1,4 +1,6 @@
+import type { HttpStatusCode } from "../enums/http";
+
 export interface HttpResponse {
-  statusCode: number;
+  statusCode: HttpStatusCode;
   body: unknown;
 }
