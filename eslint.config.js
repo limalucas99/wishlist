@@ -3,6 +3,9 @@ module.exports = (async function config() {
   
   return [
     {
+      ignores: ["dist/**", "node_modules/**", "coverage/**", "commitlint.config.js", "**/*.js"],
+    },
+    {
       ...love,
       rules: {
         ...love.rules,
@@ -15,9 +18,10 @@ module.exports = (async function config() {
         '@typescript-eslint/no-unsafe-member-access': 'off',
         'eslint-comments/require-description': 'off',
         '@typescript-eslint/no-unsafe-argument': 'off',
+        'no-console': 'off',
+        '@typescript-eslint/no-unsafe-type-assertion': 'off',
       },
-      files: ['src/**/*.js', 'src/**/*.ts', 'tests/**/*.js', 'tests/**/*.ts'],
-      ignores: ["dist/**", "node_modules/**", "coverage/**", "commitlint.config.js"],
+      files: ['src/**/*.ts', 'tests/**/*.ts'],
     },
   ]
 })()
