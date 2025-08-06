@@ -98,4 +98,34 @@ describe("WishlistRepository", () => {
       expect(result).toBe(false);
     });
   });
+
+  describe("ListWishlistProducts Integration", () => {
+    test("Should return null if client has no wishlist", async () => {
+      const sut = new WishlistRepository();
+      const clientId = "any_client_id";
+
+      const result = await sut.list(clientId);
+
+      expect(result).toBeNull();
+    });
+
+    test("Should return wishlist with products if client has items", async () => {
+      const sut = new WishlistRepository();
+      const product1: ProductModel = { id: "product_1" };
+      const product2: ProductModel = { id: "product_2" };
+      const clientId = "any_client_id";
+      const expectedProductCount = 2;
+
+      await sut.add(product1, clientId);
+      await sut.add(product2, clientId);
+
+      const result = await sut.list(clientId);
+
+      expect(result).toBeTruthy();
+      expect(result?.clientId).toBe(clientId);
+      expect(result?.products).toContain("product_1");
+      expect(result?.products).toContain("product_2");
+      expect(result?.products).toHaveLength(expectedProductCount);
+    });
+  });
 });
