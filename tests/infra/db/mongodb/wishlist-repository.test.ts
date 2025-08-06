@@ -86,5 +86,16 @@ describe("WishlistRepository", () => {
 
       expect(result).toBe(true);
     });
+    test("Should return false if product does not exist in wishlist", async () => {
+      const sut = new WishlistRepository();
+      const product: ProductModel = {
+        id: "any_product_id",
+      };
+      const clientId = "any_client_id";
+
+      const result = await sut.check(product, clientId);
+
+      expect(result).toBe(false);
+    });
   });
 });
