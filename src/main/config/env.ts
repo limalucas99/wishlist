@@ -6,6 +6,6 @@ import {
 
 export default {
   mongoUrl: process.env.MONGO_URL ?? DEFAULT_MONGO_URL,
-  mongoTestUrl: process.env.MONGO_TEST_URL ?? DEFAULT_MONGO_TEST_URL,
   port: Number(process.env.PORT) || DEFAULT_SERVER_PORT,
+  mongoTestUrl: process.env.MONGO_TEST_URL ?? DEFAULT_MONGO_TEST_URL,
 };
