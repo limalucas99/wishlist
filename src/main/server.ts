@@ -2,7 +2,7 @@ import "dotenv/config";
 import { MongoHelper } from "@/infra/db/mongodb/mongo-helper";
 import env from "./config/env";
 
-const DEFAULT_PORT = 3000;
+const DEFAULT_PORT = 3333;
 
 MongoHelper.connect(env.mongoUrl)
   .then(async () => {
