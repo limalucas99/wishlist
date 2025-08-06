@@ -3,12 +3,15 @@ import type { AddProductToWishlist } from "@/domain/usecases/add-product-to-wish
 import { MongoHelper } from "./mongo-helper";
 import type { RemoveProductFromWishlist } from "@/domain/usecases/remove-product-from-wishlist";
 import type { CheckProductInWishlist } from "@/domain/usecases/check-product-in-wishlist";
+import type { WishlistModel } from "@/domain/models/wishlist";
+import type { ListWishlistProducts } from "@/domain/usecases/list-wishlist-products";
 
 export class WishlistRepository
   implements
     AddProductToWishlist,
     RemoveProductFromWishlist,
-    CheckProductInWishlist
+    CheckProductInWishlist,
+    ListWishlistProducts
 {
   async add(product: ProductModel, clientId: string): Promise<void> {
     const wishlistCollection = MongoHelper.getCollection("wishlists");
@@ -38,5 +41,18 @@ export class WishlistRepository
     });
 
     return result !== null;
+  }
+
+  async list(clientId: string): Promise<WishlistModel | null> {
+    const wishlistCollection = MongoHelper.getCollection("wishlists");
+    const wishlistDocument = await wishlistCollection.findOne({ clientId });
+
+    if (!wishlistDocument) return null;
+
+    return {
+      id: String(wishlistDocument._id),
+      clientId,
+      products: wishlistDocument.products ?? [],
+    };
   }
 }
