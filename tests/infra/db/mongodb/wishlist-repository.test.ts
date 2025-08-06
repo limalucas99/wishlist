@@ -2,6 +2,17 @@ import { MongoHelper } from "@/infra/db/mongodb/mongo-helper";
 import { WishlistRepository } from "@/infra/db/mongodb/wishlist-repository";
 import type { ProductModel } from "@/domain/models/product";
 
+interface SutTypes {
+  sut: WishlistRepository;
+}
+
+const makeSut = (): SutTypes => {
+  const sut = new WishlistRepository();
+  return {
+    sut,
+  };
+};
+
 describe("WishlistRepository", () => {
   beforeAll(async () => {
     await MongoHelper.connect(global.__MONGO_URI__);
@@ -18,7 +29,7 @@ describe("WishlistRepository", () => {
 
   describe("AddProductToWishlist Integration", () => {
     test("Should persist product in MongoDB when adding to wishlist", async () => {
-      const sut = new WishlistRepository();
+      const { sut } = makeSut();
       const product: ProductModel = {
         id: "any_product_id",
       };
@@ -56,7 +67,7 @@ describe("WishlistRepository", () => {
 
   describe("RemoveProductFromWishlist Integration", () => {
     test("Should remove a product from the wishlist on success", async () => {
-      const sut = new WishlistRepository();
+      const { sut } = makeSut();
       const product: ProductModel = {
         id: "any_product_id",
       };
@@ -74,7 +85,7 @@ describe("WishlistRepository", () => {
 
   describe("CheckProductInWishlist Integration", () => {
     test("Should return true if product exists in wishlist", async () => {
-      const sut = new WishlistRepository();
+      const { sut } = makeSut();
       const product: ProductModel = {
         id: "any_product_id",
       };
@@ -101,7 +112,7 @@ describe("WishlistRepository", () => {
 
   describe("ListWishlistProducts Integration", () => {
     test("Should return null if client has no wishlist", async () => {
-      const sut = new WishlistRepository();
+      const { sut } = makeSut();
       const clientId = "any_client_id";
 
       const result = await sut.list(clientId);
@@ -110,7 +121,7 @@ describe("WishlistRepository", () => {
     });
 
     test("Should return wishlist with products if client has items", async () => {
-      const sut = new WishlistRepository();
+      const { sut } = makeSut();
       const product1: ProductModel = { id: "product_1" };
       const product2: ProductModel = { id: "product_2" };
       const clientId = "any_client_id";
