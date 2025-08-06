@@ -54,7 +54,7 @@ describe("WishlistRepository", () => {
     });
   });
 
-  describe("RemoveProductFromWishlist", () => {
+  describe("RemoveProductFromWishlist Integration", () => {
     test("Should remove a product from the wishlist on success", async () => {
       const sut = new WishlistRepository();
       const product: ProductModel = {
@@ -69,6 +69,22 @@ describe("WishlistRepository", () => {
       const result = await wishlistCollection.findOne({ clientId });
 
       expect(result?.products).not.toContain(product.id);
+    });
+  });
+
+  describe("CheckProductInWishlist Integration", () => {
+    test("Should return true if product exists in wishlist", async () => {
+      const sut = new WishlistRepository();
+      const product: ProductModel = {
+        id: "any_product_id",
+      };
+      const clientId = "any_client_id";
+
+      await sut.add(product, clientId);
+
+      const result = await sut.check(product, clientId);
+
+      expect(result).toBe(true);
     });
   });
 });
