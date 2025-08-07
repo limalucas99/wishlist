@@ -1,6 +1,7 @@
 import { MongoHelper } from "@/infra/db/mongodb/mongo-helper";
 import { WishlistRepository } from "@/infra/db/mongodb/wishlist-repository";
 import type { ProductModel } from "@/domain/models/product";
+import env from "@/main/config/env";
 
 interface SutTypes {
   sut: WishlistRepository;
@@ -15,7 +16,7 @@ const makeSut = (): SutTypes => {
 
 describe("WishlistRepository", () => {
   beforeAll(async () => {
-    await MongoHelper.connect(global.__MONGO_URI__);
+    await MongoHelper.connect(env.mongoTestUrl);
   });
 
   afterAll(async () => {

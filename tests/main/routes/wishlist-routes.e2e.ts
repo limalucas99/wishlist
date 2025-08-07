@@ -2,12 +2,11 @@ import request from "supertest";
 import app from "@/main/config/app";
 import { MongoHelper } from "@/infra/db/mongodb/mongo-helper";
 import { HttpStatusCode } from "@/presentation/enums/http";
-// import env from "@/main/config/env";
+import env from "@/main/config/env";
 
 describe("Wishlist Routes", () => {
   beforeAll(async () => {
-    await MongoHelper.connect(global.__MONGO_URI__); // mongoDb em memória
-    // await MongoHelper.connect(env.mongoTestUrl); OBS - Caso queira rodar com um banco de testes real
+    await MongoHelper.connect(env.mongoTestUrl);
   });
 
   afterAll(async () => {
