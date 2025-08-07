@@ -1,0 +1,36 @@
+services:
+  wishlist-app:
+    build:
+      context: .
+      target: development
+    container_name: wishlist-app
+    restart: on-failure
+    ports:
+      - "5050:5050"
+    environment:
+      NODE_ENV: development
+      MONGO_URL: mongodb://admin:password@mongodb:27017/wishlist?authSource=admin
+      MONGO_TEST_URL: mongodb://admin:password@mongodb:27017/wishlist-test?authSource=admin
+      PORT: 5050
+    volumes:
+      - .:/app               
+      - /app/node_modules    
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:7.0
+    container_name: wishlist-mongodb
+    restart: on-failure
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: wishlist
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
+    driver: local
