@@ -1,4 +1,17 @@
-import config from "./jest.config";
-config.testMatch = ["**/*.e2e.ts"];
+import type { Config } from "jest";
 
-module.exports = config;
+const config: Config = {
+  preset: "ts-jest",
+  testEnvironment: "node",
+  roots: ["<rootDir>/tests"],
+  testMatch: ["**/*.e2e.ts"],
+  transform: {
+    ".+\\.ts$": "ts-jest",
+  },
+  moduleNameMapper: {
+    "@/tests/(.*)": "<rootDir>/tests/$1",
+    "@/(.*)": "<rootDir>/src/$1",
+  },
+};
+
+export default config;
