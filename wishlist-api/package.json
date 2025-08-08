@@ -8,9 +8,9 @@
     "start": "node dist/main/server.js",
     "dev": "nodemon",
     "test": "jest --passWithNoTests --verbose --noStackTrace --runInBand --no-coverage",
-    "test:unit": "npm test -- --watch -c jest-unit-config.ts",
-    "test:integration": "npm test -- --watch -c jest-integration-config.ts",
-    "test:e2e": "npm test -- --watch -c jest-e2e-config.ts",
+    "test:unit": "npm test -- -c jest-unit-config.ts",
+    "test:integration": "npm test -- -c jest-integration-config.ts",
+    "test:e2e": "npm test -- -c jest-e2e-config.ts",
     "test:staged": "docker compose exec -T wishlist-api npm test -- --findRelatedTests",
     "prepare": "husky"
   },
