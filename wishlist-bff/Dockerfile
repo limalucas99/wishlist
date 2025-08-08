@@ -1,7 +1,7 @@
 FROM node:22-alpine AS development
 
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S wishlist-api -u 1001 -G nodejs
+    adduser -S wishlist-bff -u 1001 -G nodejs
 
 WORKDIR /app
 
@@ -11,10 +11,10 @@ RUN npm ci
 
 COPY . .
 
-RUN chown -R wishlist-api:nodejs /app
+RUN chown -R wishlist-bff:nodejs /app
 
-USER wishlist-api
+USER wishlist-bff
 
-EXPOSE 5050
+EXPOSE 3001
 
 CMD ["npm", "run", "dev"]

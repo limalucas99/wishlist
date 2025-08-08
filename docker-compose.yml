@@ -17,12 +17,11 @@ services:
       - /app/node_modules    
     depends_on:
       - mongodb
-    networks:
-      - wishlist-network
 
   wishlist-bff:
     build:
       context: ./wishlist-bff
+      target: development
     container_name: wishlist-bff
     restart: on-failure
     ports:
@@ -31,11 +30,11 @@ services:
       NODE_ENV: development
       PORT: 3001
       WISHLIST_API_URL: http://wishlist-api:5050
-      PRODUCT_API_URL: http://localhost:3002
-      JWT_SECRET: your-super-secret-jwt-key
+      JWT_SECRET: secret-jwt-key
     volumes:
       - ./wishlist-bff:/app
       - /app/node_modules    
+
 
   mongodb:
     image: mongo:7.0
